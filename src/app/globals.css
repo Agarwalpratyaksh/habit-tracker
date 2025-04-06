@@ -5,6 +5,16 @@
   --foreground: #171717;
 }
 
+
+.color-filled {
+  fill: #16a34a; /* green-600 */
+}
+.color-empty {
+  fill: #e5e7eb; /* gray-200 */
+}
+
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
