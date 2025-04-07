@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 
 type Habit = {
@@ -23,7 +23,7 @@ function getPastNDates(n: number) {
 // --- Constants ---
 const DAYS_IN_WEEK = 7;
 // Show roughly the last 52 weeks + current partial week for a year-like view
-const TOTAL_DAYS_TO_SHOW = 365 + DAYS_IN_WEEK;
+const TOTAL_DAYS_TO_SHOW = 358 + DAYS_IN_WEEK;
 
 function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   const today = new Date().toISOString().split("T")[0];
@@ -61,6 +61,25 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
     }
   };
 
+  const toogleDate = async (date:string)=>{
+    const updated = {...habit.datesCompleted}
+    updated[date]= !updated[date]
+
+    console.log(updated)
+
+    await setDoc(doc(db,"user",userId,'habits',habit.id),{
+      datesCompleted:updated
+    },{merge:true})
+
+  }
+
+  const deleteHabit = async()=>{
+    const confirm = window.confirm(`Are you sure you want to delete this habit ${habit.habit}`)
+    if(!confirm) return
+
+    await deleteDoc(doc(db,"user",userId,"habits",habit.id))
+  }
+
 
 
   return (
@@ -73,6 +92,10 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
              Tracking last ~{Math.round(TOTAL_DAYS_TO_SHOW/7)} weeks
           </p>
         </div>
+        <button className="text-red-500 hover:text-red-700 text-sm ml-2 border-1 p-2 rounded-full cursor-pointer" onClick={()=>{deleteHabit()}}>
+        🗑️
+
+        </button>
         <button
           disabled={loading}
           onClick={toggleToday}
@@ -117,6 +140,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
                 key={date}
                 title={date} // Tooltip showing the date
                 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-sm transition-colors duration-100 ${bgColor} ${hoverColor}`}
+                onClick={()=>{toogleDate(date)}}
               ></div>
             );
           })}

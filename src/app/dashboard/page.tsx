@@ -6,7 +6,6 @@ import firebase, { db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import AddHabit from "@/components/AddHabit";
 import { collection, onSnapshot } from "firebase/firestore";
-import HabitHeatmapContainer from "@/components/HabitHeatmapContainer";
 import HabitItem from "@/components/HabitItem";
 
 const auth = getAuth(firebase);
