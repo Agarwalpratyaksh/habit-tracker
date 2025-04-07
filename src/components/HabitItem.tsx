@@ -1,7 +1,7 @@
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import HabitHeatmap from "./HabitHeatmap";
+
 
 type Habit = {
   id: string;
@@ -33,7 +33,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           {isDoneToday ? "Done today ✅" : "Not done yet"}
         </p>
       </div> */}
-      <HabitHeatmap datesCompleted={habit.datesCompleted || {}} />
+      
       <button
         disabled={loading}
         onClick={toogleToday}

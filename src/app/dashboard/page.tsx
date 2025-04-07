@@ -6,7 +6,7 @@ import firebase, { db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import AddHabit from "@/components/AddHabit";
 import { collection, onSnapshot } from "firebase/firestore";
-import HabitItem from "@/components/HabitItem";
+import HabitHeatmapContainer from "@/components/HabitHeatmapContainer";
 
 const auth = getAuth(firebase);
 
@@ -47,6 +47,7 @@ useEffect(()=>{
     })
 },[user])
 
+
 const logout = async () => {
   try {
     await signOut(auth);
@@ -76,7 +77,7 @@ if (loading) return <p className="text-center p-4">Loading...</p>;
       <div>
         <AddHabit user={user} />
       </div>
-      <div>List of all the habits
+      {/* <div>List of all the habits
         
         
         <div className="space-y-3">
@@ -90,7 +91,14 @@ if (loading) return <p className="text-center p-4">Loading...</p>;
           
         ))}
       </div>
-        </div>
+        </div> */}
+
+<div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Your Habit Tracker</h1>
+      
+     
+     <HabitHeatmapContainer userId={user?.uid} habits={habits} loading={loading}/>
+    </div>
       
     </div>
   );
