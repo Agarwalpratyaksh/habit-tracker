@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import React, {  useEffect, useRef, useState } from "react";
 
 type Habit = {
   id: string;
@@ -20,15 +20,18 @@ function getPastNDates(n: number) {
   return dates;
 }
 
-// --- Constants ---
 const DAYS_IN_WEEK = 7;
-// Show roughly the last 52 weeks + current partial week for a year-like view
 const TOTAL_DAYS_TO_SHOW = 358 + DAYS_IN_WEEK;
 
 function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   const today = new Date().toISOString().split("T")[0];
   const isDoneToday = habit.datesCompleted?.[today] || false;
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName,setNewName] = useState(habit.habit)
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  console.log(newName)
 
   // Get the sequence of dates ending today
   const pastDates = getPastNDates(TOTAL_DAYS_TO_SHOW);
@@ -44,8 +47,24 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   }
   // Create an array for rendering the padding divs
   const paddingDivs = Array.from({ length: paddingDays });
-  // --- End Padding Calculation ---
 
+
+  useEffect(() => {
+    
+     leftScroll()
+  
+    
+  }, [])
+  
+  
+
+  const leftScroll = ()=>{
+    console.log("scroll krde")
+    const grid = gridRef.current
+    if(grid){
+      grid.scrollLeft = grid.scrollWidth
+    }
+  }
 
   const toggleToday = async () => {
     setLoading(true);
@@ -81,17 +100,57 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   }
 
 
+  const handleSave = async ()=>{
+    console.log(newName)
+    const habitRef = doc(db,"user",userId,"habits",habit.id)
+    await updateDoc(habitRef,{
+      habit: newName
+    })
+    setIsEditing(false)
+  }
+
 
   return (
-    <div className="p-4 border rounded shadow-sm mb-4 bg-white">
+    <div className="p-4 border rounded-xl shadow-sm mb-6 bg-white">
       {/* Habit Info and Action Button */}
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-        <div>
+        {/* <div>
           <h3 className="text-lg font-semibold">{habit.habit}</h3>
           <p className="text-xs text-gray-500">
              Tracking last ~{Math.round(TOTAL_DAYS_TO_SHOW/7)} weeks
           </p>
-        </div>
+        </div> */}
+
+
+{/* used for editing habits */}
+
+        {isEditing ? (
+  <div className="flex items-center gap-2">
+    <input
+      value={newName}
+      onChange={(e) => setNewName(e.target.value)}
+      className="border px-2 py-1 rounded text-sm"
+      onKeyDown={(e)=>e.key === 'Enter' && handleSave()}
+    />
+    <button
+      onClick={handleSave}
+      className="text-green-600 hover:text-green-800 text-sm"
+    >
+      Save
+    </button>
+  </div>
+) : (
+  <div className="flex items-center gap-2">
+    <h2 className="font-semibold text-lg text-black">{habit.habit}</h2>
+    <button
+      onClick={() => setIsEditing(true)}
+      className="text-blue-500 hover:text-blue-700 text-sm"
+    >
+      ✏️
+    </button>
+  </div>
+)}
+
         <button className="text-red-500 hover:text-red-700 text-sm ml-2 border-1 p-2 rounded-full cursor-pointer" onClick={()=>{deleteHabit()}}>
         🗑️
 
@@ -107,19 +166,18 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
         >
           {loading ? "..." : isDoneToday ? "Undo" : "Mark Done"}
         </button>
+
+        <button onClick={leftScroll} className="bg-green-700 p-2 border-2 rounded-2xl">Click to scroll</button>
       </div>
+
+
+
 
       {/* --- GitHub Style Heatmap Grid with Weekday Alignment --- */}
       {/* Add horizontal scrolling for smaller screens */}
-      <div className="overflow-x-auto rtl pb-2">
-        {/*
-          grid-rows-7:  Explicitly 7 rows for days Sun-Sat.
-          grid-flow-col: Fill columns top-to-bottom, then move to next column.
-          gap-1:         Spacing between cells.
-          w-max:         Ensure container fits all generated columns.
-                         (Alternatively use 'min-w-max')
-        */}
-        <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
+      <div ref={gridRef} className="overflow-x-auto pb-2 px-1 ">
+       
+        <div  className="grid grid-rows-7 grid-flow-col gap-1 w-max">
           {/* 1. Render Padding Divs */}
           {paddingDivs.map((_, index) => (
             <div
@@ -133,13 +191,14 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
             const completed = habit.datesCompleted?.[date] === true;
             const bgColor = completed ? "bg-green-600 " : "bg-gray-300";
             const hoverColor = completed ? "hover:bg-green-700" : "hover:bg-gray-400";
+            const isToday = date === today
             
 
             return (
               <div
                 key={date}
                 title={date} // Tooltip showing the date
-                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-sm transition-colors duration-100 ${bgColor} ${hoverColor}`}
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded transition-colors duration-100 ${bgColor} ${hoverColor} ${isToday ? 'ring-1  ring-black' : ''}`}
                 onClick={()=>{toogleDate(date)}}
               ></div>
             );
