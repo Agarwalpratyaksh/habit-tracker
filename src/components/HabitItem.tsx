@@ -1,15 +1,29 @@
 import { db } from "@/lib/firebase";
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ForwardRefExoticComponent, RefAttributes, useEffect, useRef, useState } from "react";
 import { getStreaks } from "@/lib/streaks";
 import { celebrateStreak } from "@/lib/celebration";
 import HabitCalendar from "./HabitCalendar";
+import { colorOptions, iconOptions } from "@/lib/exportedData";
+import { LucideProps } from "lucide-react";
 
 type Habit = {
   id: string;
   habit: string;
   datesCompleted: Record<string, boolean>;
+  color:string;
+  icon:string
 };
+
+type HabitIcon= {
+  name: string;
+  Icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
+}
+
+type HabitColor= {
+  name: string;
+  value :string
+}
 
 function getPastNDates(n: number) {
   const dates = [];
@@ -41,6 +55,15 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   const milestones = [3, 7, 14, 30];
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ right: true, top: 0 });
+
+
+  const habitIcon:HabitIcon|undefined = iconOptions.find(icon=> icon.name == habit.icon)
+
+    const habitColor : HabitColor | undefined= colorOptions.find(color=> color.name == habit.color)
+    const currentHabitColor = habitColor?.value
+
+
+
 
   // Get the sequence of dates ending today
   const pastDates = getPastNDates(TOTAL_DAYS_TO_SHOW);
@@ -185,6 +208,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           </div>
         ) : (
           <div className="flex items-center gap-2">
+            {habitIcon && <div className={`border p-2 rounded-md ${currentHabitColor}/25`}> <habitIcon.Icon/> </div>}
             <h2 className="font-semibold text-lg text-black">{habit.habit}</h2>
             <button
               onClick={() => setIsEditing(true)}

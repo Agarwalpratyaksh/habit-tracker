@@ -8,6 +8,8 @@ import AddHabit from "@/components/AddHabit";
 import { collection, onSnapshot } from "firebase/firestore";
 import HabitItem from "@/components/HabitItem";
 
+import AddHabitModal from "@/components/AddHabitModal";
+
 const auth = getAuth(firebase);
 
 type Habit = {
@@ -76,6 +78,9 @@ if (loading) return <p className="text-center p-4">Loading...</p>;
       <div>Welcom: {user?.email}</div>
       <div>
         <AddHabit user={user} />
+      </div>
+      <div>
+        <AddHabitModal user={user}/>
       </div>
       <div>List of all the habits
         
