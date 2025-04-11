@@ -1,38 +1,51 @@
 import { db } from "@/lib/firebase";
 import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
-import React, { ForwardRefExoticComponent, RefAttributes, useEffect, useRef, useState } from "react";
+import React, {
+  ForwardRefExoticComponent,
+  RefAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { getStreaks } from "@/lib/streaks";
 import { celebrateStreak } from "@/lib/celebration";
-import HabitCalendar from "./HabitCalendar";
 import { colorOptions, iconOptions } from "@/lib/exportedData";
 import { LucideProps } from "lucide-react";
+import Calendar from "./Calendar";
 
 type Habit = {
   id: string;
   habit: string;
   datesCompleted: Record<string, boolean>;
-  color:string;
-  icon:string
+  color: string;
+  icon: string;
 };
 
-type HabitIcon= {
+type HabitIcon = {
   name: string;
-  Icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
-}
+  Icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+};
 
-type HabitColor= {
+type HabitColor = {
   name: string;
-  value :string
-}
+  value: string;
+};
 
 function getPastNDates(n: number) {
   const dates = [];
   const today = new Date();
-  // Generate dates from n-1 days ago up to today
+  
+  // Generate dates from n-1 days ago up to today (inclusive)
   for (let i = n - 1; i >= 0; i--) {
-    const d = new Date(today);
+    const d = new Date();
     d.setDate(today.getDate() - i);
-    dates.push(d.toISOString().split("T")[0]);
+    // Format consistently to avoid timezone issues
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    dates.push(`${year}-${month}-${day}`);
   }
   return dates;
 }
@@ -47,23 +60,19 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(habit.habit);
   const gridRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const calendarButtonRef = useRef<HTMLButtonElement>(null);
   const { currentStreak, longestStreak } = getStreaks(
     habit.datesCompleted || {}
   );
   const milestones = [3, 7, 14, 30];
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarPosition, setCalendarPosition] = useState({ right: true, top: 0 });
 
+  const habitIcon: HabitIcon | undefined = iconOptions.find(
+    (icon) => icon.name == habit.icon
+  );
 
-  const habitIcon:HabitIcon|undefined = iconOptions.find(icon=> icon.name == habit.icon)
-
-    const habitColor : HabitColor | undefined= colorOptions.find(color=> color.name == habit.color)
-    const currentHabitColor = habitColor?.value
-
-
-
+  const habitColor: HabitColor | undefined = colorOptions.find(
+    (color) => color.name == habit.color
+  );
+  const currentHabitColor = habitColor?.value;
 
   // Get the sequence of dates ending today
   const pastDates = getPastNDates(TOTAL_DAYS_TO_SHOW);
@@ -80,55 +89,6 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   useEffect(() => {
     leftScroll();
   }, []);
-
-  // Calculate calendar position
-  useEffect(() => {
-    if (showCalendar && calendarButtonRef.current) {
-      const button = calendarButtonRef.current;
-      const buttonRect = button.getBoundingClientRect();
-      const screenWidth = window.innerWidth;
-      
-      // For mobile (smaller screens), position calendar in center
-      // For desktop, position it based on button
-      if (screenWidth < 640) {
-        setCalendarPosition({
-          right: false,
-          top: buttonRect.height + 8
-        });
-      } else {
-        // Check if there's enough space on the right
-        const enoughSpaceOnRight = buttonRect.right + 320 < screenWidth;
-        setCalendarPosition({
-          right: enoughSpaceOnRight,
-          top: buttonRect.height + 8
-        });
-      }
-    }
-  }, [showCalendar]);
-
-  // Close calendar when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        calendarRef.current && 
-        !calendarRef.current.contains(event.target as Node) &&
-        calendarButtonRef.current && 
-        !calendarButtonRef.current.contains(event.target as Node)
-      ) {
-        setShowCalendar(false);
-      }
-    }
-
-    // Add event listener when calendar is shown
-    if (showCalendar) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    
-    // Cleanup
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showCalendar]);
 
   const leftScroll = () => {
     const grid = gridRef.current;
@@ -208,7 +168,12 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            {habitIcon && <div className={`border p-2 rounded-md ${currentHabitColor}/25`}> <habitIcon.Icon/> </div>}
+            {habitIcon && (
+              <div className={`border p-2 rounded-md ${currentHabitColor}/25`}>
+                {" "}
+                <habitIcon.Icon />{" "}
+              </div>
+            )}
             <h2 className="font-semibold text-lg text-black">{habit.habit}</h2>
             <button
               onClick={() => setIsEditing(true)}
@@ -229,6 +194,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           </p>
         </div>
 
+        
         <button
           className="text-red-500 hover:text-red-700 text-sm ml-2 border-1 p-2 rounded-full cursor-pointer"
           onClick={deleteHabit}
@@ -236,34 +202,12 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           🗑️
         </button>
 
-        <div className="relative">
-          <button
-            ref={calendarButtonRef}
-            onClick={() => setShowCalendar(!showCalendar)}
-            className="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md hover:bg-purple-200 transition-colors flex items-center gap-1"
-          >
-            <span>📅</span> Calendar
-          </button>
-          
-          {/* Calendar Popup */}
-          <div 
-            ref={calendarRef}
-            className={`absolute z-10 ${calendarPosition.right ? 'right-0' : 'left-1/2 transform -translate-x-1/2'} sm:left-auto sm:transform-none 
-              top-[${calendarPosition.top}px] mt-1 transition-all duration-200 ease-in-out ${
-              showCalendar 
-                ? 'opacity-100 scale-100' 
-                : 'opacity-0 scale-95 pointer-events-none'
-            }`}
-            style={{ top: calendarPosition.top }}
-          >
-            {showCalendar && (
-              <HabitCalendar
-                selectedDate={habit.datesCompleted || {}}
-                onToggleDate={toggleDate}
-              />
-            )}
-          </div>
+      
+        <div>
+         <Calendar  selectedDate={habit.datesCompleted || {}}
+                onToggleDate={toggleDate}/>
         </div>
+
 
         <button
           disabled={loading}
