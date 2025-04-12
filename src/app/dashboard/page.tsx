@@ -4,7 +4,6 @@ import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import firebase, { db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import AddHabit from "@/components/AddHabit";
 import { collection, onSnapshot } from "firebase/firestore";
 import HabitItem from "@/components/HabitItem";
 
@@ -77,7 +76,6 @@ if (loading) return <p className="text-center p-4">Loading...</p>;
       </div>
       <div>Welcom: {user?.email}</div>
       <div>
-        <AddHabit user={user} />
       </div>
       <div>
         <AddHabitModal user={user}/>
@@ -85,7 +83,7 @@ if (loading) return <p className="text-center p-4">Loading...</p>;
       <div>List of all the habits
         
         
-        <div>
+        <div className="lg:mx-48">
 
         
         {habits.map((habit:Habit) => (

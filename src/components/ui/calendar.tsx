@@ -19,7 +19,7 @@ function Calendar({
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-4",
-        caption: "flex pt-1 relative items-center justify-between w-full pl-2",
+        caption: "flex pt-3 relative items-center justify-center w-full pl-2",
         caption_label: "text-md mr-5 font-medium",
         nav: " flex items-center gap-8 ",
         nav_button: cn(

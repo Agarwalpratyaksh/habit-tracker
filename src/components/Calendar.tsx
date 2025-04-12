@@ -9,14 +9,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { HabitColor } from "./HabitItem"
 
 
 type Props = {
     selectedDate: Record<string, boolean>,
-    onToggleDate: (dateStr: string) => void
+    onToggleDate: (dateStr: string) => void,
+    habitColor:HabitColor
 }
 
-export default function HCalendar({selectedDate,onToggleDate}:Props) {
+export default function HCalendar({selectedDate,onToggleDate,habitColor}:Props) {
   
     // Filter only the selected dates
     const selected = Object.entries(selectedDate)
@@ -62,10 +64,13 @@ export default function HCalendar({selectedDate,onToggleDate}:Props) {
            showOutsideDays
            fixedWeeks
            classNames={{
-               day_selected: `!bg-amber-300/20 !border-amber-300 text-white rounded-full`, // Highlight the selected day
-              //  day_today: `rounded-full border-black`, // Add a border to today's date
-              day_today: `!border-amber-500 !bg-white`, // Add a border to today's date
-              // selected: `bg-amber-500 border-amber-500 text-white`, // Highlight the selected day
+           
+               day_selected: `${habitColor.light} rounded-full !hover:!bg-red-400 `,
+               
+              
+         
+              day_today: `!border-amber-500`,
+          
 
                
              }}

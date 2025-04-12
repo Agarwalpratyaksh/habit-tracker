@@ -10,10 +10,11 @@ import React, {
 import { getStreaks } from "@/lib/streaks";
 import { celebrateStreak } from "@/lib/celebration";
 import { colorOptions, iconOptions } from "@/lib/exportedData";
-import { LucideProps } from "lucide-react";
+import { Check, LucideProps } from "lucide-react";
 import Calendar from "./Calendar";
+import HeatMap from "./HeatMap";
 
-type Habit = {
+export type Habit = {
   id: string;
   habit: string;
   datesCompleted: Record<string, boolean>;
@@ -28,23 +29,26 @@ type HabitIcon = {
   >;
 };
 
-type HabitColor = {
+export type HabitColor = {
   name: string;
   value: string;
+  light:string,
+  medium:string,
+  border:string
 };
 
 function getPastNDates(n: number) {
   const dates = [];
   const today = new Date();
-  
+
   // Generate dates from n-1 days ago up to today (inclusive)
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(today.getDate() - i);
     // Format consistently to avoid timezone issues
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
     dates.push(`${year}-${month}-${day}`);
   }
   return dates;
@@ -72,7 +76,6 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   const habitColor: HabitColor | undefined = colorOptions.find(
     (color) => color.name == habit.color
   );
-  const currentHabitColor = habitColor?.value;
 
   // Get the sequence of dates ending today
   const pastDates = getPastNDates(TOTAL_DAYS_TO_SHOW);
@@ -148,11 +151,17 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   };
 
   return (
-    <div className="p-4 border rounded-xl shadow-sm mb-6 bg-white">
+    <div className={`p-4 border ${habitColor?.border} rounded-xl shadow-sm mb-6`}>
       {/* Habit Info and Action Button */}
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
         {isEditing ? (
           <div className="flex items-center gap-2">
+            {habitIcon && (
+              <div className={`border p-2 rounded-md ${habitColor?.light}`}>
+                {" "}
+                <habitIcon.Icon />{" "}
+              </div>
+            )}
             <input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
@@ -161,7 +170,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
             />
             <button
               onClick={handleSave}
-              className="text-green-600 hover:text-green-800 text-sm"
+              className="text-sm"
             >
               Save
             </button>
@@ -169,12 +178,12 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
         ) : (
           <div className="flex items-center gap-2">
             {habitIcon && (
-              <div className={`border p-2 rounded-md ${currentHabitColor}/25`}>
+              <div className={`border p-2 rounded-md ${habitColor?.light}`}>
                 {" "}
                 <habitIcon.Icon />{" "}
               </div>
             )}
-            <h2 className="font-semibold text-lg text-black">{habit.habit}</h2>
+            <h2 className="font-semibold text-lg ">{habit.habit}</h2>
             <button
               onClick={() => setIsEditing(true)}
               className="text-blue-500 hover:text-blue-700 text-sm"
@@ -194,7 +203,6 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           </p>
         </div>
 
-        
         <button
           className="text-red-500 hover:text-red-700 text-sm ml-2 border-1 p-2 rounded-full cursor-pointer"
           onClick={deleteHabit}
@@ -202,30 +210,31 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           🗑️
         </button>
 
-      
         <div>
-         <Calendar  selectedDate={habit.datesCompleted || {}}
-                onToggleDate={toggleDate}/>
+          <Calendar
+            selectedDate={habit.datesCompleted || {}}
+            onToggleDate={toggleDate}
+            habitColor={habitColor}
+          />
         </div>
-
 
         <button
           disabled={loading}
           onClick={toggleToday}
-          className={`px-4 py-2 rounded font-medium text-white transition-colors duration-150 ease-in-out ${
+          className={`px-4 py-2 rounded-lg font-medium text-white transition-colors duration-150 ease-in-out ${
             isDoneToday
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-gray-400 hover:bg-gray-500"
+              ? `${habitColor?.value} hover:${habitColor?.medium}`
+              : `${habitColor?.light} hover:${habitColor?.medium}`
           } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          {loading ? "..." : isDoneToday ? "Undo" : "Mark Done"}
+          {loading ? "..." : isDoneToday ? <Check/>: <Check/>}
         </button>
       </div>
 
       {/* --- GitHub Style Heatmap Grid with Weekday Alignment --- */}
-      <div ref={gridRef} className="overflow-x-auto pb-2 px-1">
+
+      {/* <div ref={gridRef} className="overflow-x-auto pb-2 px-1">
         <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
-          {/* 1. Render Padding Divs */}
           {paddingDivs.map((_, index) => (
             <div
               key={`pad-${index}`}
@@ -233,7 +242,6 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
             ></div>
           ))}
 
-          {/* 2. Render Actual Date Divs */}
           {pastDates.map((date) => {
             const completed = habit.datesCompleted?.[date] === true;
             const bgColor = completed ? "bg-green-600" : "bg-gray-300";
@@ -254,6 +262,18 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
             );
           })}
         </div>
+      </div> */}
+
+      <div>
+        <HeatMap
+          gridRef={gridRef}
+          habit={habit}
+          paddingDivs={paddingDivs}
+          pastDates={pastDates}
+          today={today}
+          toggleDate={toggleDate}
+          habitColor = {habitColor}
+        />
       </div>
     </div>
   );
