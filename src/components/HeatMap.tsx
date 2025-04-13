@@ -1,6 +1,6 @@
 import React from 'react'
 import { Habit, HabitColor } from './HabitItem';
-import ReactTooltip, { Tooltip } from 'react-tooltip';
+import  { Tooltip } from 'react-tooltip';
 
 
 
@@ -23,7 +23,7 @@ function HeatMap({gridRef,paddingDivs,pastDates,today,toggleDate,habit,habitColo
 
 
   return (
-    <div ref={gridRef} className="overflow-x-auto pb-2 px-1 no-scrollbar">
+    <div ref={gridRef} className="overflow-x-auto pt-1 pb-2 px-1 no-scrollbar">
         <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
           {/* 1. Render Padding Divs */}
           {paddingDivs.map((_, index) => (

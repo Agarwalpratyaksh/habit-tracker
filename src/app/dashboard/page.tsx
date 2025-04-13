@@ -8,13 +8,16 @@ import { collection, onSnapshot } from "firebase/firestore";
 import HabitItem from "@/components/HabitItem";
 
 import AddHabitModal from "@/components/AddHabitModal";
+import HNavbar from "@/components/NavBar";
 
 const auth = getAuth(firebase);
 
 type Habit = {
     id: string,
     habit: string,
-    datesCompleted: Record<string,boolean>
+    datesCompleted: Record<string,boolean>,
+    color: string,
+    icon: string
 }
 
 function Dashboard() {
@@ -68,6 +71,10 @@ if (loading) return <p className="text-center p-4">Loading...</p>;
 
   return (
     <div>
+
+        <HNavbar />
+
+
       Dashboard
       <div>
         <button className="bg-blue-400 px-5 py-2 rounded-4xl" onClick={logout}>

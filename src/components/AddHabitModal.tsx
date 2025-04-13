@@ -81,7 +81,7 @@ export default function AddHabitModal({ user }: { user: User | null }) {
                   key={name}
                   onClick={() => setSelectedIcon(name)}
                   className={`text-2xl p-1.5 py-2 border rounded-lg flex justify-center items-center ${
-                    selectedIcon === name ? ' border-black' : ''
+                    selectedIcon === name ? ' border-black dark:border-white' : ''
                   }`}
                 >
                    
@@ -99,7 +99,7 @@ export default function AddHabitModal({ user }: { user: User | null }) {
                   key={name}
                   onClick={() => setSelectedColor(name)}
                   className={`size-7 rounded-full ${value} ${
-                    selectedColor === name ? 'ring-2 ring-black' : ''
+                    selectedColor === name ? 'ring-2 ring-black dark:ring-white' : ''
                   }`}
                 />
               ))}
