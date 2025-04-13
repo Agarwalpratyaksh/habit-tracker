@@ -47,7 +47,7 @@ function HeatMap({gridRef,paddingDivs,pastDates,today,toggleDate,habit,habitColo
                 key={date}
                 title={date}
                 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded transition-colors duration-100 cursor-pointer ${bgColor} ${hoverColor} ${
-                  isToday ? "ring-1 ring-black" : ""
+                  isToday ? "ring-1 ring-black dark:ring-white" : ""
                 }`}
              
                 data-tooltip-id="my-tooltip" data-tooltip-content={date}
