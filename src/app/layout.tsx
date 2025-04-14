@@ -38,7 +38,6 @@ export default function RootLayout({
           >
         <AuthProvider>
 
-        <ModeToggle/>
         {children}
 
         </AuthProvider>

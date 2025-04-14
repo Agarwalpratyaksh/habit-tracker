@@ -11,8 +11,8 @@ import { getStreaks } from "@/lib/streaks";
 import { celebrateStreak } from "@/lib/celebration";
 import { colorOptions, iconOptions } from "@/lib/exportedData";
 import { Check, LucideProps } from "lucide-react";
-import Calendar from "./Calendar";
 import HeatMap from "./HeatMap";
+import HabitInfo from "./HabitInfo";
 
 export type Habit = {
   id: string;
@@ -40,12 +40,9 @@ export type HabitColor = {
 function getPastNDates(n: number) {
   const dates = [];
   const today = new Date();
-
-  // Generate dates from n-1 days ago up to today (inclusive)
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(today.getDate() - i);
-    // Format consistently to avoid timezone issues
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
@@ -61,12 +58,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
   const today = new Date().toISOString().split("T")[0];
   const isDoneToday = habit.datesCompleted?.[today] || false;
   const [loading, setLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(habit.habit);
   const gridRef = useRef<HTMLDivElement>(null);
-  const { currentStreak, longestStreak } = getStreaks(
-    habit.datesCompleted || {}
-  );
   const milestones = [3, 7, 14, 30];
 
   const habitIcon: HabitIcon | undefined = iconOptions.find(
@@ -77,16 +69,13 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
     (color) => color.name == habit.color
   );
 
-  // Get the sequence of dates ending today
   const pastDates = getPastNDates(TOTAL_DAYS_TO_SHOW);
 
-  // --- Calculate Padding for Weekday Alignment ---
   let paddingDays = 0;
   if (pastDates.length > 0) {
     const firstDate = new Date(pastDates[0]);
     paddingDays = firstDate.getDay();
   }
-  // Create an array for rendering the padding divs
   const paddingDivs = Array.from({ length: paddingDays });
 
   useEffect(() => {
@@ -133,49 +122,12 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
     );
   };
 
-  const deleteHabit = async () => {
-    const confirm = window.confirm(
-      `Are you sure you want to delete this habit ${habit.habit}`
-    );
-    if (!confirm) return;
-
-    await deleteDoc(doc(db, "user", userId, "habits", habit.id));
-  };
-
-  const handleSave = async () => {
-    const habitRef = doc(db, "user", userId, "habits", habit.id);
-    await updateDoc(habitRef, {
-      habit: newName,
-    });
-    setIsEditing(false);
-  };
+ 
 
   return (
-    <div className={`p-4 border ${habitColor?.border} rounded-xl shadow-sm mb-6`}>
-      {/* Habit Info and Action Button */}
+    <div className={`md:px-4 pt-2`}>
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-        {isEditing ? (
-          <div className="flex items-center gap-2">
-            {habitIcon && (
-              <div className={`border p-2 rounded-md ${habitColor?.light}`}>
-                {" "}
-                <habitIcon.Icon />{" "}
-              </div>
-            )}
-            <input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="border px-2 py-1 rounded text-sm"
-              onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            />
-            <button
-              onClick={handleSave}
-              className="text-sm"
-            >
-              Save
-            </button>
-          </div>
-        ) : (
+        
           <div className="flex items-center gap-2">
             {habitIcon && (
               <div className={`border p-2 rounded-md ${habitColor?.light}`}>
@@ -184,44 +136,22 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
               </div>
             )}
             <h2 className="font-semibold text-lg ">{habit.habit}</h2>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-blue-500 hover:text-blue-700 text-sm"
-            >
-              ✏️
-            </button>
+            
+           
           </div>
-        )}
-        <div className="mt-2 text-sm text-gray-600 flex flex-wrap gap-4">
-          <p>
-            🔥 Current Streak: {currentStreak} day
-            {currentStreak !== 1 ? "s" : ""}
-          </p>
-          <p>
-            🏆 Longest Streak: {longestStreak} day
-            {longestStreak !== 1 ? "s" : ""}
-          </p>
-        </div>
+        
+    
 
-        <button
-          className="text-red-500 hover:text-red-700 text-sm ml-2 border-1 p-2 rounded-full cursor-pointer"
-          onClick={deleteHabit}
-        >
-          🗑️
-        </button>
+<div  className="flex gap-4">
 
-        <div>
-          <Calendar
-            selectedDate={habit.datesCompleted || {}}
-            onToggleDate={toggleDate}
-            habitColor={habitColor}
-          />
+        <div className={`${habitColor?.light} rounded-md flex items-center px-3 hover:bg-accent `}>
+          <HabitInfo habit={habit} userId={userId}/>
         </div>
 
         <button
           disabled={loading}
           onClick={toggleToday}
-          className={`px-4 py-2 rounded-lg font-medium text-white transition-colors duration-150 ease-in-out ${
+          className={`p-2 rounded-lg font-medium text-white transition-colors duration-150 ease-in-out ${
             isDoneToday
               ? `${habitColor?.value} hover:${habitColor?.medium}`
               : `${habitColor?.light} hover:${habitColor?.medium}`
@@ -230,41 +160,10 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           {loading ? "..." : isDoneToday ? <Check/>: <Check/>}
         </button>
       </div>
+      </div>
 
-      {/* --- GitHub Style Heatmap Grid with Weekday Alignment --- */}
-
-      {/* <div ref={gridRef} className="overflow-x-auto pb-2 px-1">
-        <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
-          {paddingDivs.map((_, index) => (
-            <div
-              key={`pad-${index}`}
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-sm"
-            ></div>
-          ))}
-
-          {pastDates.map((date) => {
-            const completed = habit.datesCompleted?.[date] === true;
-            const bgColor = completed ? "bg-green-600" : "bg-gray-300";
-            const hoverColor = completed
-              ? "hover:bg-green-700"
-              : "hover:bg-gray-400";
-            const isToday = date === today;
-
-            return (
-              <div
-                key={date}
-                title={date}
-                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded transition-colors duration-100 cursor-pointer ${bgColor} ${hoverColor} ${
-                  isToday ? "ring-1 ring-black" : ""
-                }`}
-                onClick={() => toggleDate(date)}
-              ></div>
-            );
-          })}
-        </div>
-      </div> */}
-
-      <div>
+  
+      <div className="">
         <HeatMap
           gridRef={gridRef}
           habit={habit}

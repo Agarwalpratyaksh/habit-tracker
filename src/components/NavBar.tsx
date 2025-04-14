@@ -23,7 +23,7 @@ export default function HNavbar({logout}:{logout:()=>void}) {
 
   const isDark = resolvedTheme === "dark";
   return (
-    <nav className="max-w-full mx-1 px-1 sm:mx-4 md:mx-8 lg:mx-48 xl:mx-60 border-b shadow-sm rounded-full border-1">
+    <nav className="max-w-full mt-7 mx-1 px-1 lg:py-3 sm:mx-4 md:mx-8 lg:mx-48 xl:mx-80 border-b shadow-sm rounded-full border-1">
       <div className="container mx-auto px-2 sm:px-4 py-3 flex justify-between items-center">
         <div className="text-lg text-gray-800 dark:text-white flex justify-between items-center cursor-pointer pl-6">
           <Image src={logo} alt="Floee Logo" height={30} className="mr-2" />

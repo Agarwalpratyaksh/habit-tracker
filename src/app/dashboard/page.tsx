@@ -5,11 +5,12 @@ import React, { useEffect, useState } from "react";
 import firebase, { db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { collection, onSnapshot } from "firebase/firestore";
-import HabitItem from "@/components/HabitItem";
+import HabitItem, { HabitColor } from "@/components/HabitItem";
 
 import AddHabitModal from "@/components/AddHabitModal";
 import HNavbar from "@/components/NavBar";
 import { NewNavbar } from "@/components/NewNavbar";
+import { colorOptions } from "@/lib/exportedData";
 
 const auth = getAuth(firebase);
 
@@ -65,19 +66,32 @@ function Dashboard() {
     <div>
       <HNavbar logout={logout} />
 
-      <div>
-        <AddHabitModal user={user} />
-      </div>
-      <div>
-        List of all the habits
-        <div className="lg:mx-48">
-          {habits.map((habit: Habit) => (
-            <HabitItem key={habit.id} habit={habit} userId={user?.uid} />
-          ))}
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-3">
+        <div className="flex justify-between items-center lg:my-6 my-4 mb-5">
+          <h1 className="text-2xl font-bold">Your Habits</h1>
+          <AddHabitModal user={user} />
+        </div>
+        
+        <div className="space-y-4">
+          {habits.map((habit: Habit) => {
+            const habitColor: HabitColor | undefined = colorOptions.find(
+              (color) => color.name == habit.color
+            );
+
+            return (
+              <div 
+                key={habit.habit} 
+                className={`p-4 border ${habitColor?.border} rounded-xl shadow-sm`}
+              >
+                <HabitItem key={habit.id} habit={habit} userId={user?.uid} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
+
 }
 
 export default Dashboard;

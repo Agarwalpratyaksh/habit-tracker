@@ -19,7 +19,7 @@ type Props = {
 
 }
 
-function HeatMap({gridRef,paddingDivs,pastDates,today,toggleDate,habit,habitColor}:Props) {
+function HeatMap({gridRef,paddingDivs,pastDates,today,habit,habitColor}:Props) {
 
 
   return (
@@ -29,7 +29,7 @@ function HeatMap({gridRef,paddingDivs,pastDates,today,toggleDate,habit,habitColo
           {paddingDivs.map((_, index) => (
             <div
               key={`pad-${index}`}
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-sm"
+              className="w-2 h-2 sm:w-4 sm:h-4 rounded-sm"
             ></div>
           ))}
 
@@ -46,7 +46,7 @@ function HeatMap({gridRef,paddingDivs,pastDates,today,toggleDate,habit,habitColo
               <div
                 key={date}
                 title={date}
-                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded transition-colors duration-100 cursor-pointer ${bgColor} ${hoverColor} ${
+                className={`w-2.5 h-2.5 sm:w-4 sm:h-4 rounded-xs sm:rounded transition-colors duration-100 cursor-pointer ${bgColor} ${hoverColor} ${
                   isToday ? "ring-1 ring-black dark:ring-white" : ""
                 }`}
              

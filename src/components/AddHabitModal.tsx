@@ -13,6 +13,7 @@ import { iconOptions,colorOptions } from "@/lib/exportedData";
 import { db } from "@/lib/firebase";
 import { User } from "firebase/auth";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { Plus } from "lucide-react";
 
 import { FormEvent, useState } from "react";
 
@@ -56,7 +57,10 @@ export default function AddHabitModal({ user }: { user: User | null }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create a New Habit</Button>
+        <Button className="gap-2">
+          <Plus className="h-4 w-4" />
+          <span>New Habit</span>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
