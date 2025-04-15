@@ -66,9 +66,9 @@ function Dashboard() {
     <div>
       <HNavbar logout={logout} />
 
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-3">
-        <div className="flex justify-between items-center lg:my-6 my-4 mb-5">
-          <h1 className="text-2xl font-bold">Your Habits</h1>
+      <div className="mx-auto px-2 sm:px-6 lg:px-8 max-w-6xl py-3">
+        <div className="flex justify-between items-center lg:my-6 my-4 mb-5 px-4 mx-auto">
+          <h1 className="text-2xl font-bold ">Your Habits</h1>
           <AddHabitModal user={user} />
         </div>
         

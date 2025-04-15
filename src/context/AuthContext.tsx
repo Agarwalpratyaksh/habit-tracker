@@ -3,6 +3,8 @@
 import {onAuthStateChanged, getAuth, User} from 'firebase/auth'
 import firebase from "@/lib/firebase";
 import { createContext, useContext, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import Loader from '@/components/ui/loader';
 
 const auth = getAuth(firebase)
 
@@ -41,13 +43,14 @@ export const AuthProvider =({children}: {children:React.ReactNode})=>{
 
     return (
         <AuthContext.Provider value={{user,loading}}>
-            {loading?<div>Loading ......</div>:children}
+            {loading?<div className=''><Loader/></div>:children}
         </AuthContext.Provider>
     )
 
 
     
 }
+
 
 
 

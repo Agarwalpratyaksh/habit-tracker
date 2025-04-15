@@ -57,7 +57,7 @@ export default function AddHabitModal({ user }: { user: User | null }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button className="gap-2 border-1" variant={"outline"}>
           <Plus className="h-4 w-4" />
           <span>New Habit</span>
         </Button>
