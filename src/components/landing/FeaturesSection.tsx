@@ -3,7 +3,7 @@
 import React from "react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/aceternity/bento-grid";
 import { BackgroundGradient } from "@/components/ui/aceternity/background-gradient";
-import { IconChartDots3, IconPalette, IconCheck, IconCalendarStats, IconTargetArrow } from "@tabler/icons-react"; // Example icons
+import { IconPalette, IconCheck, IconCalendarStats, IconTargetArrow } from "@tabler/icons-react"; // Example icons
 
 
 
