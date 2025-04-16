@@ -4,7 +4,7 @@ import { TextGenerateEffect } from "@/components/ui/aceternity/text-generate-eff
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import screenshot from "../../public/screenshot-portrait-black.png";
-import { Flame,  NotebookPen, PartyPopper } from "lucide-react";
+import { Flame, NotebookPen, PartyPopper } from "lucide-react";
 import Image from "next/image";
 import SmallCard from "@/components/landing/SmallCard";
 import { Grid, Edit, Award, Moon, Calendar } from "lucide-react";
@@ -52,52 +52,47 @@ export default function LandingPage() {
     },
   ];
 
-  const redirectLogin = () => {};
   return (
     <div className="flex min-h-screen flex-col bg-[#0a0a0a]">
       <LNavbar />
 
-      <div className="mt-36 text-center">
-        <div className="min-h-72 flex justify-center items-center flex-col text-7xl font-extrabold gap-4 text-center py-6">
+      {/* Hero Section - Made responsive */}
+      <div className="mt-28 md:mt-36 text-center px-4">
+        <div className="min-h-72 flex justify-center items-center flex-col text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold gap-4 text-center py-6">
           <div className="flex flex-col gap-2">
             <div>
               Ship your <span className="text-[#444DFF]">habits</span> like
             </div>
             <div>you ship your code</div>
           </div>
-          <div className="md:px-24 xl:px-96 mb-6">
+          <div className="px-4 md:px-24 xl:px-96 mb-6">
             <TextGenerateEffect
-              className="text-center font-thin text-xs"
+              className="text-center font-thin text-xs sm:text-sm"
               words="Track everything you care about in one place. Simple, visual habit tracking that keeps you going."
               duration={1}
             />
           </div>
 
-
-
-
           <div className="my-auto flex items-center">
             <Link href={"/login"} className="rounded-xl">
-              <Button className="bg-[#444DFF] hover:bg-[#444DFF]/90 text-white text-xl px-8 py-6 rounded-xl">
+              <Button className="bg-[#444DFF] hover:bg-[#444DFF]/90 text-white text-lg md:text-xl px-6 md:px-8 py-5 md:py-6 rounded-xl">
                 Get started
               </Button>
             </Link>
           </div>
-
-
-
         </div>
       </div>
 
-      <div className="py-12 flex justify-center">
-        <div className="overflow-x-auto pt-1 pb-2 px-1 no-scrollbar">
-          <div className="grid grid-rows-7 grid-flow-col gap-1 w-max">
+      {/* Activity Grid Section - Made responsive */}
+      <div className="py-8 md:py-12 flex justify-center">
+        <div className="overflow-x-auto pt-1 pb-2 px-1 no-scrollbar w-full max-w-screen-lg mx-auto">
+          <div className="grid grid-rows-7 grid-flow-col gap-1 w-max mx-auto">
             {pastDates.map((date) => {
               const isActive = activeDays.includes(date);
               return (
                 <div
                   key={date}
-                  className={`w-2.5 h-2.5 sm:w-6 sm:h-6 rounded-xs sm:rounded transition-colors duration-100 cursor-pointer ${
+                  className={`w-4 h-4 sm:w-5 md:w-6 sm:h-5 md:h-6 rounded-xs sm:rounded transition-colors duration-100 cursor-pointer ${
                     isActive ? "bg-[#444DFF]" : "bg-[#444DFF]/25"
                   }`}
                 ></div>
@@ -107,36 +102,45 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <div className="py-6 flex justify-center gap-8 items-center xl:px-24">
+      {/* Feature Cards Section - Made responsive */}
+      <div className="py-6 flex flex-col md:flex-row justify-center gap-4 md:gap-8 items-center px-4 xl:px-24">
         <LCard
-          icon={<NotebookPen className="text-green-600 size-14" />}
+          icon={<NotebookPen className="text-green-600 size-10 md:size-14" />}
           content="Easily add, edit, and delete habits with a simple interface. Customize them with icons and colors, and manage everything with just a few clicks."
         />
         <LCard
-          icon={<PartyPopper className="text-blue-600 size-14" />}
+          icon={<PartyPopper className="text-blue-600 size-10 md:size-14" />}
           content="Celebrate consistency with streaks and confetti on milestones, keeping you motivated with visual rewards as you hit your habit goals."
         />
         <LCard
-          icon={<Flame className="text-yellow-600 size-14" />}
+          icon={<Flame className="text-yellow-600 size-10 md:size-14" />}
           content="Track progress with a colorful heatmap that shows your streaks over time. Stay on track anywhere with a mobile-friendly design."
         />
       </div>
-      <div className="lg:pl-24 lg:pr-6 py-12 flex">
-        <Image src={screenshot} height={1024} alt="Dummy Image" />
-        <div className="pt-24 flex-1">
-          <div className="text-center text-6xl font-extrabold flex flex-col gap-3">
-            <span>Track Habits Visually</span>
 
+      {/* Screenshot and Features Section - Made responsive */}
+      <div className="px-4 lg:pl-24 lg:pr-6 py-12 flex flex-col lg:flex-row">
+        <div className="flex justify-center lg:justify-start">
+          <Image 
+            src={screenshot} 
+            height={1024} 
+            alt="Floee App Screenshot" 
+            className="max-w-full sm:max-w-md lg:max-w-full"
+          />
+        </div>
+        <div className="lg:pt-24 flex-1 mt-8 lg:mt-0">
+          <div className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold flex flex-col gap-2 md:gap-3">
+            <span>Track Habits Visually</span>
             <span>Anytime, Anywhere</span>
           </div>
 
-          <div className="py-8 text-center font-thin text-lg">
+          <div className="py-6 md:py-8 text-center font-thin text-base md:text-lg px-2">
             Stay consistent on the go with our mobile-friendly habit tracker.
             Easily mark your progress, view streaks, and track habits with a
             clean, GitHub-style heatmap — right from your phone.
           </div>
 
-          <div className="grid grid-cols-2 gap-8 px-12 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-4 sm:px-12">
             {featureIcons.map((featured, index) => {
               return (
                 <SmallCard
