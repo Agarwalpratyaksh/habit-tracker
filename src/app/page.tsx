@@ -1,13 +1,12 @@
 import { LCard } from "@/components/landing/Card";
 import { LNavbar } from "@/components/landing/Navbar";
 import { TextGenerateEffect } from "@/components/ui/aceternity/text-generate-effect";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import screenshot from "../../public/screenshot-portrait-black.png";
 import { Flame, NotebookPen, PartyPopper } from "lucide-react";
 import Image from "next/image";
 import SmallCard from "@/components/landing/SmallCard";
 import { Grid, Edit, Award, Moon, Calendar } from "lucide-react";
+import RedirectBtn from "@/components/landing/Redirect";
 
 export default function LandingPage() {
   const pastDates = [];
@@ -73,11 +72,7 @@ export default function LandingPage() {
           </div>
 
           <div className="my-auto flex items-center">
-            <Link href={"/login"} className="rounded-xl">
-              <Button className="bg-[#444DFF] hover:bg-[#444DFF]/90 text-white text-lg md:text-xl px-6 md:px-8 py-5 md:py-6 rounded-xl">
-                Get started
-              </Button>
-            </Link>
+            <RedirectBtn />
           </div>
         </div>
       </div>
