@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import React, {
   ForwardRefExoticComponent,
   RefAttributes,
@@ -32,9 +32,9 @@ type HabitIcon = {
 export type HabitColor = {
   name: string;
   value: string;
-  light:string,
-  medium:string,
-  border:string
+  light: string;
+  medium: string;
+  border: string;
 };
 
 function getPastNDates(n: number) {
@@ -122,47 +122,40 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
     );
   };
 
- 
-
   return (
     <div className={`md:px-4 pt-2`}>
       <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-        
-          <div className="flex items-center gap-2">
-            {habitIcon && (
-              <div className={`border p-2 rounded-md ${habitColor?.light}`}>
-                {" "}
-                <habitIcon.Icon />{" "}
-              </div>
-            )}
-            <h2 className="font-semibold text-lg ">{habit.habit}</h2>
-            
-           
-          </div>
-        
-    
-
-<div  className="flex gap-4">
-
-        <div className={`${habitColor?.light} rounded-md flex items-center px-3 hover:bg-accent `}>
-          <HabitInfo habit={habit} userId={userId}/>
+        <div className="flex items-center gap-2">
+          {habitIcon && (
+            <div className={`border p-2 rounded-md ${habitColor?.light}`}>
+              {" "}
+              <habitIcon.Icon />{" "}
+            </div>
+          )}
+          <h2 className="font-semibold text-lg ">{habit.habit}</h2>
         </div>
 
-        <button
-          disabled={loading}
-          onClick={toggleToday}
-          className={`p-2 rounded-lg font-medium text-white transition-colors duration-150 ease-in-out ${
-            isDoneToday
-              ? `${habitColor?.value} hover:${habitColor?.medium}`
-              : `${habitColor?.light} hover:${habitColor?.medium}`
-          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-        >
-          {loading ? "..." : isDoneToday ? <Check/>: <Check/>}
-        </button>
-      </div>
+        <div className="flex gap-4">
+          <div
+            className={`${habitColor?.light} rounded-md flex items-center px-3 hover:bg-accent `}
+          >
+            <HabitInfo habit={habit} userId={userId} />
+          </div>
+
+          <button
+            disabled={loading}
+            onClick={toggleToday}
+            className={`p-2 rounded-lg font-medium text-white transition-colors duration-150 ease-in-out ${
+              isDoneToday
+                ? `${habitColor?.value} hover:${habitColor?.medium}`
+                : `${habitColor?.light} hover:${habitColor?.medium}`
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {loading ? "..." : isDoneToday ? <Check /> : <Check />}
+          </button>
+        </div>
       </div>
 
-  
       <div className="">
         <HeatMap
           gridRef={gridRef}
@@ -171,7 +164,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
           pastDates={pastDates}
           today={today}
           toggleDate={toggleDate}
-          habitColor = {habitColor}
+          habitColor={habitColor}
         />
       </div>
     </div>

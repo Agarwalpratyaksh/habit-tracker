@@ -56,7 +56,6 @@ export default function LandingPage() {
     <div className="flex min-h-screen flex-col bg-[#0a0a0a]">
       <LNavbar />
 
-      {/* Hero Section - Made responsive */}
       <div className="mt-28 md:mt-36 text-center px-4">
         <div className="min-h-72 flex justify-center items-center flex-col text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold gap-4 text-center py-6">
           <div className="flex flex-col gap-2">
@@ -83,7 +82,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Activity Grid Section - Made responsive */}
       <div className="py-8 md:py-12 flex justify-center">
         <div className="overflow-x-auto pt-1 pb-2 px-1 no-scrollbar w-full max-w-screen-lg mx-auto">
           <div className="grid grid-rows-7 grid-flow-col gap-1 w-max mx-auto">
@@ -102,29 +100,30 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Feature Cards Section - Made responsive */}
       <div className="py-6 flex flex-col md:flex-row justify-center gap-4 md:gap-8 items-center px-4 xl:px-24">
         <LCard
-          icon={<NotebookPen className="text-green-600 size-10 md:size-14" />}
+          Icon={NotebookPen}
+          iconClass="text-green-600 size-10 md:size-14"
           content="Easily add, edit, and delete habits with a simple interface. Customize them with icons and colors, and manage everything with just a few clicks."
         />
         <LCard
-          icon={<PartyPopper className="text-blue-600 size-10 md:size-14" />}
+          Icon={PartyPopper}
+          iconClass="text-blue-600  size-10 md:size-14"
           content="Celebrate consistency with streaks and confetti on milestones, keeping you motivated with visual rewards as you hit your habit goals."
         />
         <LCard
-          icon={<Flame className="text-yellow-600 size-10 md:size-14" />}
+          Icon={Flame}
+          iconClass="text-yellow-600 size-10 md:size-14"
           content="Track progress with a colorful heatmap that shows your streaks over time. Stay on track anywhere with a mobile-friendly design."
         />
       </div>
 
-      {/* Screenshot and Features Section - Made responsive */}
       <div className="px-4 lg:pl-24 lg:pr-6 py-12 flex flex-col lg:flex-row">
         <div className="flex justify-center lg:justify-start">
-          <Image 
-            src={screenshot} 
-            height={1024} 
-            alt="Floee App Screenshot" 
+          <Image
+            src={screenshot}
+            height={1024}
+            alt="Floee App Screenshot"
             className="max-w-full sm:max-w-md lg:max-w-full"
           />
         </div>

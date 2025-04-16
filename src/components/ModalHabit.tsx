@@ -1,26 +1,25 @@
 import { db } from "@/lib/firebase";
-import { deleteDoc, doc,  updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React, {
   ForwardRefExoticComponent,
   RefAttributes,
   useEffect,
   useRef,
   useState,
-  useCallback, 
+  useCallback,
 } from "react";
 import { getStreaks } from "@/lib/streaks";
 import { celebrateStreak } from "@/lib/celebration";
 import { colorOptions, iconOptions } from "@/lib/exportedData";
 import {
-
   CircleCheck,
   CircleDashed,
   LucideProps,
   Pencil,
-  Save, 
+  Save,
   Trash2,
   XIcon,
-  TrendingUp, 
+  TrendingUp,
 } from "lucide-react";
 import Calendar from "./Calendar";
 import HeatMap from "./HeatMap";
@@ -48,7 +47,6 @@ export type HabitColor = {
   border: string;
 };
 
-// Helper functions remain the same
 function getPastNDates(n: number) {
   const dates = [];
   const today = new Date();
@@ -64,7 +62,7 @@ function getPastNDates(n: number) {
 }
 
 const DAYS_IN_WEEK = 7;
-const TOTAL_DAYS_TO_SHOW = 358 + DAYS_IN_WEEK; // ~ 1 Year
+const TOTAL_DAYS_TO_SHOW = 358 + DAYS_IN_WEEK;
 
 function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
   const today = new Date().toISOString().split("T")[0];
@@ -73,9 +71,7 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(habit.habit);
   const gridRef = useRef<HTMLDivElement>(null);
-  const { currentStreak } = getStreaks(
-    habit.datesCompleted || {}
-  );
+  const { currentStreak } = getStreaks(habit.datesCompleted || {});
   const milestones = [3, 7, 14, 30]; // Consider making this configurable
 
   const habitIcon: HabitIcon | undefined = iconOptions.find(
@@ -86,16 +82,14 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
     (color) => color.name == habit.color
   );
 
-  // --- Calculate Padding for Weekday Alignment ---
   const pastDates = getPastNDates(TOTAL_DAYS_TO_SHOW);
   let paddingDays = 0;
   if (pastDates.length > 0) {
     const firstDate = new Date(pastDates[0]);
-    paddingDays = firstDate.getDay(); // 0 (Sun) to 6 (Sat)
+    paddingDays = firstDate.getDay();
   }
   const paddingDivs = Array.from({ length: paddingDays });
 
-  // Scroll heatmap to the end on mount
   useEffect(() => {
     const grid = gridRef.current;
     if (grid) {
@@ -103,16 +97,13 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
     }
   }, []);
 
-  // --- Firebase Operations (memoized with useCallback) ---
-
   const toggleToday = useCallback(async () => {
     setLoading(true);
     const updatedDates = { ...habit.datesCompleted, [today]: !isDoneToday };
     const { currentStreak: newStreak } = getStreaks(updatedDates);
 
-    // Check *before* updating Firestore to ensure celebration happens
     if (!isDoneToday && milestones.includes(newStreak)) {
-        celebrateStreak(newStreak);
+      celebrateStreak(newStreak);
     }
 
     const habitRef = doc(db, "user", userId, "habits", habit.id);
@@ -120,60 +111,52 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
       await updateDoc(habitRef, {
         [`datesCompleted.${today}`]: !isDoneToday,
       });
-      // No need to update local state manually if you're using Firestore snapshots
-      // If not using snapshots, update local state here
     } catch (error) {
       console.error("Error updating habit completion:", error);
-      // Optionally: revert UI state or show error message
     } finally {
       setLoading(false);
     }
   }, [habit.id, userId, habit.datesCompleted, isDoneToday, today, milestones]);
 
-  const toggleDate = useCallback(async (date: string) => {
-    const currentStatus = habit.datesCompleted?.[date] ?? false;
-    const updatedDates = { ...habit.datesCompleted, [date]: !currentStatus };
+  const toggleDate = useCallback(
+    async (date: string) => {
+      const currentStatus = habit.datesCompleted?.[date] ?? false;
+      const updatedDates = { ...habit.datesCompleted, [date]: !currentStatus };
 
-    const { currentStreak: newStreak } = getStreaks(updatedDates);
+      const { currentStreak: newStreak } = getStreaks(updatedDates);
 
-    // Check *before* updating Firestore to ensure celebration happens
-    if (!isDoneToday && milestones.includes(newStreak)) {
+      if (!isDoneToday && milestones.includes(newStreak)) {
         celebrateStreak(newStreak);
-    }
+      }
 
-
-
-    // Potentially recalculate streak if needed, though toggleToday handles the main case
-    // const { currentStreak: newStreak } = getStreaks(updatedDates);
-    // Check for milestones if toggling past dates should also celebrate? (Decide based on product reqs)
-
-    const habitRef = doc(db, "user", userId, "habits", habit.id);
-    try {
+      const habitRef = doc(db, "user", userId, "habits", habit.id);
+      try {
         await updateDoc(habitRef, {
-            datesCompleted: updatedDates, // Update the whole map for simplicity here
+          datesCompleted: updatedDates,
         });
-        // If not using snapshots, update local state here
-    } catch (error) {
+      } catch (error) {
         console.error("Error toggling date:", error);
-    }
-  }, [habit.id, userId, habit.datesCompleted]);
-
+      }
+    },
+    [habit.id, userId, habit.datesCompleted]
+  );
 
   const deleteHabit = useCallback(async () => {
-    if (window.confirm(`Are you sure you want to delete the habit "${habit.habit}"?`)) {
-      setLoading(true); // Optional: indicate loading during delete
+    if (
+      window.confirm(
+        `Are you sure you want to delete the habit "${habit.habit}"?`
+      )
+    ) {
+      setLoading(true);
       try {
         await deleteDoc(doc(db, "user", userId, "habits", habit.id));
-        // Close modal or navigate away after deletion (handled by parent component typically)
       } catch (error) {
         console.error("Error deleting habit:", error);
-        // Show error message
       } finally {
         setLoading(false);
       }
     }
   }, [habit.id, userId, habit.habit]);
-
 
   const handleSave = useCallback(async () => {
     if (newName.trim() === habit.habit) {
@@ -181,7 +164,6 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
       return;
     }
     if (newName.trim() === "") {
-      // Optional: Add validation feedback
       console.warn("Habit name cannot be empty");
       return;
     }
@@ -193,7 +175,6 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
         habit: newName.trim(),
       });
       setIsEditing(false);
-      // If not using snapshots, update local state here
     } catch (error) {
       console.error("Error updating habit name:", error);
     } finally {
@@ -201,10 +182,7 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
     }
   }, [habit.id, userId, newName, habit.habit]);
 
-  // --- Render Logic ---
-
   if (!habit || !habit.id || !userId) {
-    // Basic loading/error state - could be enhanced
     return <div className="p-6 text-center">Loading habit data...</div>;
   }
 
@@ -213,42 +191,54 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
   const primaryButtonBaseStyles =
     "px-4 py-2 rounded-lg font-semibold transition-all duration-150 ease-in-out flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
-
   return (
-    <div className="p-4 md:p-6 space-y-5"> {/* Increased padding and spacing */}
-
-      {/* Top Section: Habit Info, Edit/Save, Streak */}
+    <div className="p-4 md:p-6 space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        {/* Left: Icon and Name/Edit */}
         <div className="flex items-center gap-3 flex-grow">
           {habitIcon && (
             <div
               className={`flex-shrink-0 p-2 rounded-lg border ${habitColor?.border} ${habitColor?.light}`}
             >
-              <habitIcon.Icon className="w-5 h-5" /> {/* Consistent icon size */}
+              <habitIcon.Icon className="w-5 h-5" />
             </div>
           )}
           {isEditing ? (
             <div className="flex items-center gap-2 flex-grow">
-              {/* If using shadcn/ui Input: <Input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSave()} className="text-lg" /> */}
               <input
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="border rounded px-3 py-1.5 text-lg w-full dark:bg-gray-800 dark:border-gray-600" // Larger text, padding
+                className="border rounded px-3 py-1.5 text-lg w-full dark:bg-gray-800 dark:border-gray-600"
                 onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                autoFocus // Focus input when editing starts
+                autoFocus
               />
-              <button onClick={handleSave} className={commonButtonStyles} aria-label="Save name">
-                <Save size={20} className="text-green-600"/>
+              <button
+                onClick={handleSave}
+                className={commonButtonStyles}
+                aria-label="Save name"
+              >
+                <Save size={20} className="text-green-600" />
               </button>
-              <button onClick={() => setIsEditing(false)} className={commonButtonStyles} aria-label="Cancel edit">
-                <XIcon size={20} className="text-red-600"/>
+              <button
+                onClick={() => setIsEditing(false)}
+                className={commonButtonStyles}
+                aria-label="Cancel edit"
+              >
+                <XIcon size={20} className="text-red-600" />
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 flex-grow min-w-0"> 
-              <h2 className="font-semibold text-xl truncate" title={habit.habit}>{habit.habit}</h2>
-              <button onClick={() => setIsEditing(true)} className={commonButtonStyles} aria-label="Edit name">
+            <div className="flex items-center gap-2 flex-grow min-w-0">
+              <h2
+                className="font-semibold text-xl truncate"
+                title={habit.habit}
+              >
+                {habit.habit}
+              </h2>
+              <button
+                onClick={() => setIsEditing(true)}
+                className={commonButtonStyles}
+                aria-label="Edit name"
+              >
                 <Pencil size={16} />
               </button>
             </div>
@@ -256,53 +246,59 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
         </div>
 
         {/* Right: Current Streak */}
-         {!isEditing && ( 
-             <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border whitespace-nowrap ${habitColor?.border} ${currentStreak > 0 ? habitColor?.medium : habitColor?.light}`}
-             >
-                <TrendingUp size={18} />
-                <span className="font-semibold text-sm">
-                    {currentStreak} Day Streak
-                </span>
-             </div>
-         )}
+        {!isEditing && (
+          <div
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border whitespace-nowrap ${
+              habitColor?.border
+            } ${currentStreak > 0 ? habitColor?.medium : habitColor?.light}`}
+          >
+            <TrendingUp size={18} />
+            <span className="font-semibold text-sm">
+              {currentStreak} Day Streak
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Heatmap Section */}
-      <div className="mt-2"> 
+      <div className="mt-2">
         <HeatMap
           gridRef={gridRef}
           habit={habit}
           paddingDivs={paddingDivs}
           pastDates={pastDates}
           today={today}
-          toggleDate={toggleDate} 
+          toggleDate={toggleDate}
           habitColor={habitColor}
         />
       </div>
 
-      <div className="flex items-center justify-between gap-3 pt-3 border-t dark:border-gray-700"> {/* Added top border */}
+      <div className="flex items-center justify-between gap-3 pt-3 border-t dark:border-gray-700">
+        {" "}
+        {/* Added top border */}
         <div className="flex items-center gap-2">
           <button
-            onClick={deleteHabit} 
+            onClick={deleteHabit}
             className={`${commonButtonStyles} text-red-600 border-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 dark:border-red-900 border-1`}
             disabled={loading}
             aria-label="Delete habit"
           >
             <Trash2 size={20} />
           </button>
-          <button className={`${commonButtonStyles} border-1`} aria-label="Open calendar view" >
+          <button
+            className={`${commonButtonStyles} border-1`}
+            aria-label="Open calendar view"
+          >
             <Calendar
               selectedDate={habit.datesCompleted || {}}
-              onToggleDate={toggleDate} 
+              onToggleDate={toggleDate}
               habitColor={habitColor}
             />
           </button>
         </div>
-
         <button
           disabled={loading}
-          onClick={toggleToday} 
+          onClick={toggleToday}
           className={`${primaryButtonBaseStyles} ${
             isDoneToday
               ? `${habitColor?.value} text-white hover:opacity-90 dark:text-black` // Ensure contrast on colored background
@@ -311,10 +307,26 @@ function ModalHabit({ habit, userId }: { habit: Habit; userId: string }) {
         >
           {loading ? (
             <>
-             <svg className="animate-spin -ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-             </svg>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
               Updating...
             </>
           ) : isDoneToday ? (

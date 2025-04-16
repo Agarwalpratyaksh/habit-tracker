@@ -50,9 +50,7 @@ export function getStreaks(datesCompleted: Record<string, boolean>) {
   return { currentStreak, longestStreak };
 }
 
-function dateDifference(d1:Date, d2:Date){
-
-    const ms = d2.getTime()-d1.getTime()
-    return Math.round(ms/(1000*60*60*24))
-
+function dateDifference(d1: Date, d2: Date) {
+  const ms = d2.getTime() - d1.getTime();
+  return Math.round(ms / (1000 * 60 * 60 * 24));
 }

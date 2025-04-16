@@ -13,7 +13,7 @@ import { HabitColor } from "./HabitItem";
 type Props = {
   selectedDate: Record<string, boolean>;
   onToggleDate: (dateStr: string) => void;
-  habitColor: HabitColor|undefined;
+  habitColor: HabitColor | undefined;
 };
 
 export default function HCalendar({
@@ -21,20 +21,17 @@ export default function HCalendar({
   onToggleDate,
   habitColor,
 }: Props) {
-  // Filter only the selected dates
   const selected = Object.entries(selectedDate)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([_, isSelected]) => isSelected)
     .map(([dateStr]) => {
-      // Create proper Date objects in local timezone
       const date = new Date(dateStr);
-      // Handle timezone offset to ensure correct day display
       return date;
     });
 
   const handleSelect = (date: Date | undefined) => {
     if (!date) return;
 
-    // Format date consistently to match the format used in the habit tracker
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");

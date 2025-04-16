@@ -9,7 +9,6 @@ import HabitItem, { HabitColor } from "@/components/HabitItem";
 
 import AddHabitModal from "@/components/AddHabitModal";
 import HNavbar from "@/components/NavBar";
-import { NewNavbar } from "@/components/NewNavbar";
 import { colorOptions } from "@/lib/exportedData";
 
 const auth = getAuth(firebase);
@@ -34,11 +33,11 @@ function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, loading]);
 
-  //fetch the habit from firebase in realtime
   useEffect(() => {
     if (!user) return;
     const habitRef = collection(db, "user", user?.uid, "habits");
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const unsubscribe = onSnapshot(habitRef, (snapShot) => {
       const data = snapShot.docs.map((h) => ({
         id: h.id,
@@ -71,7 +70,7 @@ function Dashboard() {
           <h1 className="text-2xl font-bold ">Your Habits</h1>
           <AddHabitModal user={user} />
         </div>
-        
+
         <div className="space-y-4">
           {habits.map((habit: Habit) => {
             const habitColor: HabitColor | undefined = colorOptions.find(
@@ -79,11 +78,13 @@ function Dashboard() {
             );
 
             return (
-              <div 
-                key={habit.habit} 
+              <div
+                key={habit.habit}
                 className={`p-4 border ${habitColor?.border} rounded-xl shadow-sm`}
               >
-                <HabitItem key={habit.id} habit={habit} userId={user?.uid} />
+                {user?.uid && (
+                  <HabitItem key={habit.id} habit={habit} userId={user?.uid} />
+                )}
               </div>
             );
           })}
@@ -91,7 +92,6 @@ function Dashboard() {
       </div>
     </div>
   );
-
 }
 
 export default Dashboard;

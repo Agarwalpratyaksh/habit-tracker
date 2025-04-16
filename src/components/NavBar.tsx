@@ -12,12 +12,20 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import logo from "../../public/HLogo-Transparent 1.png";
-import { AlarmClockCheck, ChevronDown, ListCheck, LogOut, Moon, Sun, User } from "lucide-react";
+import {
+  AlarmClockCheck,
+  ChevronDown,
+  ListCheck,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-export default function HNavbar({logout}:{logout:()=>void}) {
+export default function HNavbar({ logout }: { logout: () => void }) {
   const { setTheme, resolvedTheme } = useTheme();
   const { user } = useAuth();
 
@@ -65,38 +73,40 @@ export default function HNavbar({logout}:{logout:()=>void}) {
               </NavigationMenuLink>
             </NavigationMenuItem>
 
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  className={` px-2 sm:px-3 py-2 flex items-center hover:bg-accent rounded-md`}
+                >
+                  <User size={18} />
+                  <span className="hidden sm:inline mx-1">User </span>
+                  <ChevronDown size={12} />
+                </button>
+              </PopoverTrigger>
 
-<Popover>
-  <PopoverTrigger asChild>
-    <button className={` px-2 sm:px-3 py-2 flex items-center hover:bg-accent rounded-md`}>
-      <User size={18} />
-      <span className="hidden sm:inline mx-1">User </span>
-      <ChevronDown size={12}/>
-    </button>
-  </PopoverTrigger>
-
-  <PopoverContent align="start" side="bottom" className="w-[200px] p-4">
-    <ul className="grid gap-3 w-full">
-      <li className="text-sm text-gray-700 dark:text-gray-300 truncate">
-        {user?.email}
-      </li>
-      <li>
-        <button
-          onClick={logout}
-          className={cn(subLinkClasses, "w-full text-left")}
-        >
-          <div className="flex items-center">
-            <LogOut className="mr-2 size-4" />
-            <span>Log out</span>
-          </div>
-        </button>
-      </li>
-    </ul>
-  </PopoverContent>
-</Popover>
-
-
-
+              <PopoverContent
+                align="start"
+                side="bottom"
+                className="w-[200px] p-4"
+              >
+                <ul className="grid gap-3 w-full">
+                  <li className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                    {user?.email}
+                  </li>
+                  <li>
+                    <button
+                      onClick={logout}
+                      className={cn(subLinkClasses, "w-full text-left")}
+                    >
+                      <div className="flex items-center">
+                        <LogOut className="mr-2 size-4" />
+                        <span>Log out</span>
+                      </div>
+                    </button>
+                  </li>
+                </ul>
+              </PopoverContent>
+            </Popover>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
