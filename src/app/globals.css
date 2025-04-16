@@ -14,6 +14,10 @@
   fill: #e5e7eb; /* gray-200 */
 }
 
+
+@theme {
+  --color-blue-custom: oklch(0.54 0.2564 271.75)
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

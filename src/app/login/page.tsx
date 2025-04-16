@@ -89,7 +89,7 @@ function LoginPage() {
                             placeholder="Email address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-custom transition-colors"
                             required
                             disabled={isLoading}
                         />
@@ -106,7 +106,7 @@ function LoginPage() {
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-custom transition-colors"
                             required
                             disabled={isLoading}
                         />
@@ -131,7 +131,7 @@ function LoginPage() {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className={`w-full bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 ease-in-out ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`w-full bg-blue-custom hover:bg-blue-custom/80 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 ease-in-out ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         disabled={isLoading}
                     >
                         {isLoading ? 'Logging in...' : 'Log in'}
@@ -141,18 +141,13 @@ function LoginPage() {
                     <div className="flex justify-centre text-md pt-2">
                        <div className="mr-2">Don`t have an account yet ? </div>
                         <Link href="/signup" // Update link as needed
-                              className="font-medium text-blue-500 hover:text-blue-300">
+                              className="font-medium text-blue-custom hover:text-blue-custom/80">
                             Sign up
                         </Link>
                     </div>
                 </form>
 
-            </div> {/* End of main content container */}
-
-            {/* Footer */}
-            {/* <footer className="absolute bottom-4 text-center text-xs text-gray-500 w-full">
-                © {new Date().getFullYear()} Flee. All rights reserved. 
-            </footer> */}
+            </div> 
         </div>
     );
 }

@@ -77,7 +77,7 @@ export default function SignupPage() {
                             placeholder="Email address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-custom transition-colors"
                             required
                             disabled={isLoading}
                         />
@@ -93,7 +93,7 @@ export default function SignupPage() {
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full pl-10 pr-3 py-2.5 border-white/50 border-1 rounded-lg placeholder-gray-500 text-gray-200 focus:outline-none focus:border-blue-custom transition-colors"
                             required
                             disabled={isLoading}
                         />
@@ -114,7 +114,7 @@ export default function SignupPage() {
 
                     <button
                         type="submit"
-                        className={`w-full bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 ease-in-out ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`w-full bg-blue-custom hover:bg-blue-custom/60 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 ease-in-out ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         disabled={isLoading}
                     >
                         {isLoading ? 'Signing up...' : 'Sign up'}
@@ -123,8 +123,8 @@ export default function SignupPage() {
                     <div className="flex justify-centre text-md pt-2">
                        <div className="mr-2">Already have an account ? </div>
                         <Link href="/login" // Update link as needed
-                              className="font-medium text-blue-500 hover:text-blue-300">
-                            Sign up
+                              className="font-medium text-blue-custom hover:text-blue-custom/80">
+                            Login
                         </Link>
                     </div>
                 </form>
