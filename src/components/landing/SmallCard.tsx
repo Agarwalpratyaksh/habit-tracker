@@ -12,8 +12,8 @@ type Prop = {
 function SmallCard({ Logo, heading, content }: Prop) {
   return (
     <div className="flex justify-center items-start flex-col gap-3">
-      <div className="bg-white/5 p-3 border-1 border-white/20 rounded-xl">
-        {Logo && <Logo size={30} color="white" />}
+      <div className="text-black dark:text-white bg-black/5 dark:bg-white/5 p-3 border-1  border-black/20 dark:border-white/20 rounded-xl">
+        {Logo && <Logo size={30}  />}
       </div>
       <div className="font-bold text-xl">{heading}</div>
       <div className="text-base">{content}</div>

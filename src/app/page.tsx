@@ -52,7 +52,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0a0a0a]">
+    <div className="flex min-h-screen flex-col dark:bg-[#0a0a0a]">
       <LNavbar />
 
       <div className="mt-28 md:mt-36 text-center px-4">

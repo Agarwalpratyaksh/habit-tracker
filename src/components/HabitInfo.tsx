@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/habit-dailog";
 import { Habit } from "./HabitItem";
 import ModalHabit from "./ModalHabit";
-import { Info } from "lucide-react";
+import {  Settings2 } from "lucide-react";
 
 export default function HabitInfo({
   habit,
@@ -19,7 +19,8 @@ export default function HabitInfo({
     <Dialog>
       <DialogTrigger asChild>
         <div>
-          <Info size={20} />
+          <Settings2 size={20} />
+          
         </div>
       </DialogTrigger>
       <DialogContent className="max-w-[calc(100%-0.5rem)] sm:max-w-[1024px]">

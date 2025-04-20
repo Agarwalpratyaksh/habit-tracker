@@ -151,7 +151,7 @@ function HabitItem({ habit, userId }: { habit: Habit; userId: string }) {
                 : `${habitColor?.light} hover:${habitColor?.medium}`
             } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {loading ? "..." : isDoneToday ? <Check /> : <Check />}
+            {loading ? "..." : isDoneToday ? <Check /> : <Check className="text-black dark:text-white"/>}
           </button>
         </div>
       </div>
