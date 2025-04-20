@@ -15,7 +15,7 @@ function RedirectBtn() {
       if (user) {
         router.push("/dashboard");
       } else {
-        router.push("/login");
+        router.push("/signup");
       }
     } finally {
       setIsLoading(false);

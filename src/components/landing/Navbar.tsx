@@ -6,6 +6,7 @@ import logo from "../../../public/HLogo-Transparent 1.png";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { Download } from "lucide-react";
 
 export function LNavbar() {
   const router = useRouter();
@@ -13,8 +14,8 @@ export function LNavbar() {
     router.push("/login");
   };
 
-  const signup = () => {
-    router.push("/signup");
+  const install = () => {
+    router.push("/install-app");
   };
   return (
     <div className="relative w-full flex items-center ">
@@ -27,19 +28,19 @@ export function LNavbar() {
             <span className="text-xl">Floee</span>
           </div>
           <div className="flex gap-3">
+          
+              <Button variant="outline" className="gap-2 px-5 py-2 text-base" onClick={install}>
+                <Download className="w-4 h-4" />
+                 App
+              </Button>
+         
+           
             <Button
-              className="border-1 hover:bg-white/10"
+              className="border-1 bg-[#444DFF] hover:bg-[#444DFF]/70"
               variant={"ghost"}
               onClick={login}
             >
               Login
-            </Button>
-            <Button
-              className="border-1 bg-[#444DFF] hover:bg-[#444DFF]/70"
-              variant={"ghost"}
-              onClick={signup}
-            >
-              Signup
             </Button>
           </div>
         </Menu>

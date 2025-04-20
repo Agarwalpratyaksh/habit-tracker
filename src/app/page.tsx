@@ -71,8 +71,9 @@ export default function LandingPage() {
             />
           </div>
 
-          <div className="my-auto flex items-center">
+          <div className="my-auto flex flex-col sm:flex-row items-center justify-center gap-4">
             <RedirectBtn />
+           
           </div>
         </div>
       </div>
