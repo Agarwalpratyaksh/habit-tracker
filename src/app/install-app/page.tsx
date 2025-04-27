@@ -28,7 +28,7 @@ export default function InstallPage() {
                 <span>
                   Open <strong>Safari</strong> and go to{" "}
                   <code className="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-sm">
-                    floee.app
+                    floee.vercel.app
                   </code>
                 </span>
               </li>
@@ -74,7 +74,7 @@ export default function InstallPage() {
                 <span>
                   Open <strong>Chrome</strong> and visit{" "}
                   <code className="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-sm">
-                    floee.app
+                    floee.vercel.app
                   </code>
                 </span>
               </li>
